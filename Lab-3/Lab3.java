@@ -1,91 +1,141 @@
 import java.util.Scanner;
 
-public class StudentDetails {
-  
-  static String[][] studentData = new String[100][5];
-  static String[] studentNames = new String[100];
-  static int count = 0;
-  
-  public static void main(String[] args) {
+public class Lab3{
+
+
+
+
+   
     
-    Scanner sc = new Scanner(System.in);
-    int choice;
-    
-    do {
-      System.out.println("Enter your choice:");
-      System.out.println("1. Add student details");
-      System.out.println("2. Display student details");
-      System.out.println("3. Search student details");
-      System.out.println("4. Exit");
-      
-      choice = sc.nextInt();
-      switch(choice) {
-        case 1:
-          addStudentDetails();
-          break;
-        case 2:
-          displayStudentDetails();
-          break;
-        case 3:
-          searchStudentDetails();
-          break;
-        case 4:
-          System.out.println("Exiting the program...");
-          break;
-        default:
-          System.out.println("Invalid choice. Please enter a valid option.");
+//Array to store the details of the student
+static String[][] studentDetails = new String[1024][5];
+        
+//Array to store the names of the students
+static String[] studentNames = new String[1024];
+        
+    public static void main(String[] args) {
+            
+      //Menu-driven main method
+      int choice;
+      do 
+      {
+         System.out.println("Please Select an Operation:");
+         System.out.println("1. Enter Student Details");
+         System.out.println("2. Display Student Details");
+         System.out.println("3. Search Student Details");
+         System.out.println("4. Exit");
+         Scanner scan = new Scanner(System.in);
+         choice = scan.nextInt();
+         switch(choice) {
+         case 1: 
+            enterStudentDetails();
+            break;
+         case 2:
+            displayStudentDetails();
+            break;
+         case 3:
+            searchStudentDetails();
+            break;
+         case 4:
+            System.out.println("Exiting Program");
+            break;
+         default:
+            System.out.println("Invalid Choice");
+                }
+            } while (choice != 4);
+        }
+        
+        //Function to enter student details
+        public static void enterStudentDetails() {
+            System.out.println("Enter Student Name:");
+            Scanner scan = new Scanner(System.in);
+            String name = scan.nextLine();
+            //Check if the name is already entered
+            if(!checkName(name)) {
+                System.out.println("Enter Register Number:");
+                String regNo = scan.nextLine();
+                System.out.println("Enter Email Id:");
+                String email = scan.nextLine();
+                System.out.println("Enter Class:");
+                String className = scan.nextLine();
+                System.out.println("Enter Department:");
+                String dept = scan.nextLine();
+                //Add the details to the arrays
+                addToArray(name, regNo, email, className, dept);
+                System.out.println("Student Details Added Successfully!");
+            }
+            else {
+                System.out.println("Student Details Already Exists!");
+            }
+        }
+        
+        //Function to display student details
+        public static void displayStudentDetails() {
+            System.out.println("Enter Student Name:");
+            Scanner sc = new Scanner(System.in);
+            String name = sc.nextLine();
+            //Check if the name is already entered
+            if(checkName(name)) {
+                //Get the index of the array
+                int index = getIndex(name);
+                //Print the details
+                System.out.println("Name: "+studentDetails[index][0]);
+                System.out.println("Register Number: "+studentDetails[index][1]);
+                System.out.println("Email Id: "+studentDetails[index][2]);
+                System.out.println("Class: "+studentDetails[index][3]);
+                System.out.println("Department: "+studentDetails[index][4]);
+            }
+            else {
+                System.out.println("Student Details Not Found!");
+            }
+        }
+        
+        //Function to search student details
+        public static void searchStudentDetails() {
+            System.out.println("Enter Student Name:");
+            Scanner sc = new Scanner(System.in);
+            String name = sc.nextLine();
+            //Check if the name is already entered
+            if(checkName(name)) {
+                System.out.println("Student Details Found!");
+            }
+            else {
+                System.out.println("Student Details Not Found!");
+            }
+        }
+        
+        //Function to check if the name is already entered
+        public static boolean checkName(String name) {
+            for(int i=0;i<1024;i++) {
+                if(studentNames[i] != null && studentNames[i].equalsIgnoreCase(name)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        //Function to get the index of the array
+        public static int getIndex(String name) {
+            for(int i=0;i<1024;i++) {
+                if(studentNames[i] != null && studentNames[i].equalsIgnoreCase(name)) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+        
+        //Function to add the details to the arrays
+        public static void addToArray(String name, String regNo, String email, String className, String dept) {
+            for(int i=0;i<1024;i++) {
+                if(studentNames[i] == null) {
+                    studentNames[i] = name;
+                    studentDetails[i][0] = name;
+                    studentDetails[i][1] = regNo;
+                    studentDetails[i][2] = email;
+                    studentDetails[i][3] = className;
+                    studentDetails[i][4] = dept;
+                    return;
+                }
+            }
+        }
       }
-    } while(choice != 4);
-    
-    sc.close();
-  }
-  
-  public static void addStudentDetails() {
-    Scanner sc = new Scanner(System.in);
-    System.out.println("Enter student name:");
-    String name = sc.nextLine();
-    
-    int index = searchByName(name);
-    if(index != -1) {
-      System.out.println("Student details already exist. Please enter another name.");
-      return;
-    }
-    
-    studentNames[count] = name;
-    studentData[count][0] = name;
-    
-    System.out.println("Enter student register number:");
-    studentData[count][1] = sc.nextLine();
-    
-    System.out.println("Enter student email:");
-    studentData[count][2] = sc.nextLine();
-    
-    System.out.println("Enter student class:");
-    studentData[count][3] = sc.nextLine();
-    
-    System.out.println("Enter student department:");
-    studentData[count][4] = sc.nextLine();
-    
-    count++;
-    System.out.println("Student details added successfully.");
-    sc.close();
-  }
-  
-  public static void displayStudentDetails() {
-    Scanner sc = new Scanner(System.in);
-    System.out.println("Enter student name:");
-    String name = sc.nextLine();
-    
-    int index = searchByName(name);
-    if(index == -1) {
-      System.out.println("Student details not found.");
-      return;
-    }
-    
-    System.out.println("Name: " + studentData[index][0]);
-    System.out.println("Register Number: " + studentData[index][1]);
-    System.out.println("Email: " + studentData[index][2]);
-    System.out.println("Class: " + studentData[index][3]);
-    System.out.println("Department: " + studentData[index][4]);
-    }
-}
