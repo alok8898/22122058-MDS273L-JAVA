@@ -8,30 +8,33 @@ public class Lab5 {
         
         Scanner scan = new Scanner(System.in);
         
-        System.out.println("Enter the message:");
-        String message = scan.nextLine();
-        System.out.println("Choose an option:");
-        System.out.println("1. Encrypt");
-        System.out.println("2. Decrypt");
-        int option = scan.nextInt();
-        scan.nextLine();
-        String result = "";
+        while(true){
+            System.out.println("Enter the message:");
+            String message = scan.nextLine();
+            System.out.println("Choose an option:");
+            System.out.println("1. Encrypt");
+            System.out.println("2. Decrypt");
+            int option = scan.nextInt();
+            scan.nextLine();
+            String result = "";
 
-        switch(option) {
-            case(1):
-                result = encrpty(message);
-                break;
-
-            case(2):
-                result = decrypt(message);
-                break;
-
-            default:
-            System.out.println("Invalid option");
-            System.exit(0);
-
+            switch(option) {
+                case(1):
+                    result = encrpty(message);
+                    break;
+    
+                case(2):
+                    result = decrypt(message);
+                    break;
+    
+                default:
+                System.out.println("Invalid option");
+                System.exit(0);
+    
+            }
+            System.out.println("Result: " + result);
         }
-        System.out.println("Result: " + result);
+        
     }
 
     public static String encrpty(String message) {
