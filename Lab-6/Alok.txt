@@ -1,0 +1,6 @@
+Registration Number: 22122058
+Name: Alok
+Email: yadav.alok@msds.christuniversity.in
+Phone: 7977031042
+Class: MsDs
+Department: Data Science

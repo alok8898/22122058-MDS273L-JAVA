@@ -1,49 +1,115 @@
+
+// Import the Scanner class to read input from the user
 import java.util.Scanner;
 
 public class Lab5 {
-    
-    String Plain = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-    public static void main(String[] args) {
+ static String[] message;
+ 
+
+
+// Function to encode the input string
+    public static String encode(String message)
+    {
         
-        Scanner scan = new Scanner(System.in);
+       
+        String result = "";
         
+        // Iterate over each character in the message
+        for (char c : message.toCharArray()) {
+            // Calculate the index of the character in the alphabet
+            int index = c - 'A';
+
+            // If the character is a letter between A and Z, encrypt it
+            if (index >= 0 && index < 26) {
+            // Replace the character with the corresponding character from the cypher row    
+            result += "XYZABCDEFGHIJKLMNOPQRSTUVW".charAt(index);
+            } 
+            
+            else {
+                result += c;
+            }
+        }
+        return result;
+    }
+    // Function to decode the input string
+    public static String decode(String message){
+
+      
+        String result = "";
+         // Iterate over each character in the message
+        for (char c : message.toCharArray()) {
+            int index = c - 'A';
+            if (index >= 0 && index < 26) {
+                result += "DEFGHIJKLMNOPQRSTUVWXYZABC".charAt(index);
+            } else {
+                result += c;
+            }
+        }
+        return result;
+    }
+    
+
+
+    // Define the main() function to read input from the user and run the program
+    public static void main(String[] args) { 
+
+        // Create a Scanner object to read input from the user
+        Scanner scan=new Scanner(System.in);
+
+        // Display a menu and prompt the user for their choice
         while(true){
-            System.out.println("Enter the message:");
-            String message = scan.nextLine();
-            System.out.println("Choose an option:");
+
             System.out.println("1. Encrypt");
             System.out.println("2. Decrypt");
-            int option = scan.nextInt();
-            scan.nextLine();
-            String result = "";
+            System.out.println("3. Exit");
+            System.out.print("Enter your choice (1/2/3): ");
+            String choice = scan.nextLine(); 
 
-            switch(option) {
-                case(1):
-                    result = encrpty(message);
-                    break;
-    
-                case(2):
-                    result = decrypt(message);
-                    break;
-    
-                default:
-                System.out.println("Invalid option");
-                System.exit(0);
-    
+            // If the user chooses to encrypt a message, prompt them for the message and display the encrypted message
+            if (choice.equals("1")){
+
+
+                System.out.println("Enter the message for encryption");
+                String message=scan.nextLine();
+                message=message.toUpperCase();
+                System.out.println("Enrypted message is:" +encode(message));
+
             }
-            System.out.println("Result: " + result);
+
+            // If the user chooses to decrypt a message, prompt them for the message and display the decrypted message
+            else if(choice.equals("2")){ 
+
+                System.out.println("Enter the message for decryption");
+                String message=scan.nextLine();
+                message=message.toUpperCase();
+                System.out.println("Decrypted message is:" +decode(message));
+
+
+            }
+
+            // Condition to exit from the program
+            else if(choice.equals("3")){
+
+                System.out.println("Exit the program");
+                break;
+            }
+
+            else{
+
+                System.out.println("Invalid choice");
+            }
+
+
+
+
         }
-        
-    }
 
-    public static String encrpty(String message) {
-        System.out.println("encrpty");
-        return "";
+     
     }
-
-    public static String decrypt(String message) {
-        System.out.println("decrypt");
-        return "";
-    }
+    
 }
+
+
+//INPUT: THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG
+//OUTPUT: QEB NRFZH YOLTK CLU GRJMP LSBO QEB IXWV ALD

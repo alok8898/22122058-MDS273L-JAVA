@@ -1,149 +1,221 @@
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Arrays;
-import java.util.Scanner;
 
-public class Lab7 {
-
-    public static void main(String[] args) throws FileNotFoundException {
-        // Load dataset from CSV file
-        double[][] dataset = loadDataset("iris.csv");
-        
-              // Calculate summary statistics for each attribute
-        double[] sepalLengths = getAttribute(dataset, 0);
-        double[] sepalWidths = getAttribute(dataset, 1);
-        double[] petalLengths = getAttribute(dataset, 2);
-        double[] petalWidths = getAttribute(dataset, 3);
-
-        // Calculate summary statistics for overall dataset
-        System.out.println("Overall Summary Statistics:");
-        printSummaryStats(sepalLengths, "SepalLengthCm");
-        printSummaryStats(sepalWidths, "SepalWidthCm");
-        printSummaryStats(petalLengths, "PetalLengthCm");
-        printSummaryStats(petalWidths, "PetalWidthCm");
-
-        // Calculate summary statistics for each species
-        double[][] setosaData = filterBySpecies(dataset, "Iris-setosa");
-        double[][] versicolorData = filterBySpecies(dataset, "Iris-versicolor");
-        double[][] virginicaData = filterBySpecies(dataset, "Iris-virginica");
-
-        System.out.println("Summary Statistics for Iris-setosa:");
-        printSummaryStats(getAttribute(setosaData, 0), "SepalLengthCm");
-        printSummaryStats(getAttribute(setosaData, 1), "SepalWidthCm");
-        printSummaryStats(getAttribute(setosaData, 2), "PetalLengthCm");
-        printSummaryStats(getAttribute(setosaData, 3), "PetalWidthCm");
-
-        System.out.println("Summary Statistics for Iris-versicolor:");
-        printSummaryStats(getAttribute(versicolorData, 0), "SepalLengthCm");
-        printSummaryStats(getAttribute(versicolorData, 1), "SepalWidthCm");
-        printSummaryStats(getAttribute(versicolorData, 2), "PetalLengthCm");
-        printSummaryStats(getAttribute(versicolorData, 3), "PetalWidthCm");
-
-        System.out.println("Summary Statistics for Iris-virginica:");
-        printSummaryStats(getAttribute(virginicaData, 0), "SepalLengthCm");
-        printSummaryStats(getAttribute(virginicaData, 1), "SepalWidthCm");
-        printSummaryStats(getAttribute(virginicaData, 2), "PetalLengthCm");
-        printSummaryStats(getAttribute(virginicaData, 3), "PetalWidthCm");
-    }
-
-    private static double[][] loadDataset(String filename) throws FileNotFoundException {
-        Scanner scanner = new Scanner(new File(filename));
-        double[][] dataset = new double[150][4];
-        int i = 0;
-        while (scanner.hasNextLine()) {
-            String[] line = scanner.nextLine().split(",");
-            for (int j = 0; j < 4; j++) {
-                dataset[i][j] = Double.parseDouble(line[j]);
-            }
-            i++;
-        }
-        scanner.close();
-        return dataset;
-    }
-
-    private static double[] getAttribute(double[][] dataset, int attributeIndex) {
-        double[] attribute = new double[dataset.length];
-         for (int i = 0; i < dataset.length; i++) {
-            attribute[i] = dataset[i][attributeIndex];
-        }
-        return attribute;
-    }
-
-    private static double[][] filterBySpecies(double[][] dataset, String string) {
-        double[][] filteredData = new double[50][4];
-        int count = 0;
-        for (int i = 0; i < dataset.length; i++) {
-            if (dataset[i][4] == string) {
-                filteredData[count] = Arrays.copyOf(dataset[i], 4);
+public class Lab7{
+    public static void main(String[] args) {
+        String iris = "iris.csv";
+        String line ="";
+        int count=0, setosacount=0, versicolorcount=0, verginicacount=0;
+        float[] sepel_length = new float[150];
+        float[] sepel_width = new float[150];
+        float[] petal_length = new float[150];
+        float[] petal_width = new float[150];
+        float[] setosa_sepel_length = new float[50];
+        float[] setosa_sepel_width = new float[50];
+        float[] setosa_petal_length = new float[50];
+        float[] setosa_petal_width = new float[50];
+        float[] versicolor_sepel_length = new float[50];
+        float[] versicolor_sepel_width = new float[50];
+        float[] versicolor_petal_length = new float[50];
+        float[] versicolor_petal_width = new float[50];
+        float[] verginica_sepel_length = new float[50];
+        float[] verginica_sepel_width = new float[50];
+        float[] verginica_petal_length = new float[50];
+        float[] verginica_petal_width = new float[50];
+        try{
+            BufferedReader br = new BufferedReader(new FileReader(iris));
+            br.readLine();
+            while((line = br.readLine())!=null){
+                String[] values = line.split(",");
+                sepel_length[count]=Float.parseFloat(values[1]);
+                sepel_width[count]=Float.parseFloat(values[2]);
+                petal_length[count]=Float.parseFloat(values[3]);
+                petal_width[count]=Float.parseFloat(values[4]);
                 count++;
-            }
-        }
-        return Arrays.copyOf(filteredData, count);
-    }
-    
-    private static void printSummaryStats(double[] attribute, String attributeName) {
-        double mean = calculateMean(attribute);
-        double median = calculateMedian(attribute);
-        double mode = calculateMode(attribute);
-        double min = calculateMin(attribute);
-        double max = calculateMax(attribute);
-        System.out.printf("%s: Mean=%.2f, Median=%.2f, Mode=%.2f, Min=%.2f, Max=%.2f%n", 
-            attributeName, mean, median, mode, min, max);
-    }
-    
-    private static double calculateMean(double[] attribute) {
-        double sum = 0;
-        for (double value : attribute) {
-            sum += value;
-        }
-        return sum / attribute.length;
-    }
-    
-    private static double calculateMedian(double[] attribute) {
-        Arrays.sort(attribute);
-        int middle = attribute.length / 2;
-        if (attribute.length % 2 == 0) {
-            return (attribute[middle - 1] + attribute[middle]) / 2.0;
-        } else {
-            return attribute[middle];
-        }
-    }
-    
-    private static double calculateMode(double[] attribute) {
-        int modeCount = 0;
-        double mode = 0;
-        for (int i = 0; i < attribute.length; i++) {
-            int count = 0;
-            for (int j = 0; j < attribute.length; j++) {
-                if (attribute[j] == attribute[i]) {
-                    count++;
+                if(values[5].equals("Iris-setosa")){
+                    setosa_sepel_length[setosacount]=Float.parseFloat(values[1]);
+                    setosa_sepel_width[setosacount]=Float.parseFloat(values[2]);
+                    setosa_petal_length[setosacount]=Float.parseFloat(values[3]);
+                    setosa_petal_width[setosacount]=Float.parseFloat(values[4]);
+                    setosacount++;
+                }
+                else if(values[5].equals("Iris-versicolor")){
+                    versicolor_sepel_length[versicolorcount]=Float.parseFloat(values[1]);
+                    versicolor_sepel_width[versicolorcount]=Float.parseFloat(values[2]);
+                    versicolor_petal_length[versicolorcount]=Float.parseFloat(values[3]);
+                    versicolor_petal_width[versicolorcount]=Float.parseFloat(values[4]);
+                    versicolorcount++;
+                }
+                else{
+                    verginica_sepel_length[verginicacount]=Float.parseFloat(values[1]);
+                    verginica_sepel_width[verginicacount]=Float.parseFloat(values[2]);
+                    verginica_petal_length[verginicacount]=Float.parseFloat(values[3]);
+                    verginica_petal_width[verginicacount]=Float.parseFloat(values[4]);
+                    verginicacount++;
                 }
             }
-            if (count > modeCount) {
-                modeCount = count;
-                mode = attribute[i];
+            double sepel_length_mean = calculatemean(sepel_length, count);
+            double setosa_sepel_length_mean = calculatemean(setosa_sepel_length,setosacount);
+            double setosa_sepel_width_mean = calculatemean(setosa_sepel_width,setosacount);
+            double setosa_petal_length_mean = calculatemean(setosa_petal_length,setosacount);
+            double setosa_petal_width_mean = calculatemean(setosa_petal_width,setosacount);
+            double sepel_width_mean = calculatemean(sepel_width, count);
+            double versicolor_sepel_length_mean = calculatemean(versicolor_sepel_length,versicolorcount);
+            double versicolor_sepel_width_mean = calculatemean(versicolor_sepel_width,versicolorcount);
+            double versicolor_petal_length_mean = calculatemean(versicolor_petal_length,versicolorcount);
+            double versicolor_petal_width_mean = calculatemean(versicolor_petal_width,versicolorcount);
+            double petal_length_mean = calculatemean(petal_length, count);
+            double verginica_sepel_length_mean = calculatemean(verginica_sepel_length,verginicacount);
+            double verginica_sepel_width_mean = calculatemean(verginica_sepel_width,verginicacount);
+            double verginica_petal_length_mean = calculatemean(verginica_petal_length,verginicacount);
+            double verginica_petal_width_mean = calculatemean(verginica_petal_width,verginicacount);
+            double petal_width_mean = calculatemean(petal_width, count);
+            double sepel_length_mode = calculatemode(sepel_length, count);
+            double setosa_sepel_length_mode = calculatemode(setosa_sepel_length, setosacount);
+            double setosa_sepel_width_mode = calculatemode(setosa_sepel_width, setosacount);
+            double setosa_petel_length_mode = calculatemode(setosa_petal_length, setosacount);
+            double setosa_petel_width_mode = calculatemode(setosa_petal_width, setosacount);
+            double sepel_width_mode = calculatemode(sepel_width, count);
+            double versicolor_sepel_length_mode = calculatemode(versicolor_sepel_length,versicolorcount);
+            double versicolor_sepel_width_mode = calculatemode(versicolor_sepel_width,versicolorcount);
+            double versicolor_petal_length_mode = calculatemode(versicolor_petal_length,versicolorcount);
+            double versicolor_petal_width_mode = calculatemode(versicolor_petal_width,versicolorcount);
+            double petel_length_mode = calculatemode(petal_length, count);
+            double verginica_sepel_length_mode = calculatemode(verginica_sepel_length,verginicacount);
+            double verginica_sepel_width_mode = calculatemode(verginica_sepel_width,verginicacount);
+            double verginica_petal_length_mode = calculatemode(verginica_petal_length,verginicacount);
+            double verginica_petal_width_mode = calculatemode(verginica_petal_width,verginicacount);
+            double petel_width_mode = calculatemode(petal_width, count);
+            double sepel_length_min = calculatemin(sepel_length);
+            double setosa_sepel_length_min = calculatemin(setosa_sepel_length);
+            double setosa_sepel_width_min = calculatemin(setosa_sepel_width);
+            double setosa_petal_length_min = calculatemin(setosa_petal_length);
+            double setosa_petal_width_min = calculatemin(setosa_petal_width);
+            double sepel_width_min = calculatemin(sepel_width);
+            double versicolor_sepel_length_min = calculatemin(versicolor_sepel_length);
+            double versicolor_sepel_width_min = calculatemin(versicolor_sepel_width);
+            double versicolor_petal_length_min = calculatemin(versicolor_petal_length);
+            double versicolor_petal_width_min = calculatemin(versicolor_petal_width);
+            double petal_length_min = calculatemin(petal_length);
+            double verginica_sepel_length_min = calculatemin(verginica_sepel_length);
+            double verginica_sepel_width_min = calculatemin(verginica_sepel_width);
+            double verginica_petal_length_min = calculatemin(verginica_petal_length);
+            double verginica_petal_width_min = calculatemin(verginica_petal_width);
+            double petal_width_min = calculatemin(petal_width);
+            double sepel_length_max = calculatemax(sepel_length);
+            double setosa_sepel_length_max = calculatemaxx(setosa_sepel_length);
+            double setosa_sepel_width_max = calculatemaxx(setosa_sepel_width);
+            double setosa_petal_length_max = calculatemaxx(setosa_petal_length);
+            double setosa_petal_width_max = calculatemaxx(setosa_petal_width);
+            double sepel_width_max = calculatemax(sepel_width);
+            double versicolor_sepel_length_max = calculatemaxx(versicolor_sepel_length);
+            double versicolor_sepel_width_max = calculatemaxx(versicolor_sepel_width);
+            double versicolor_petal_length_max = calculatemaxx(versicolor_petal_length);
+            double versicolor_petal_width_max = calculatemaxx(versicolor_petal_width);
+            double petal_length_max = calculatemax(petal_length);
+            double verginica_sepel_length_max = calculatemaxx(verginica_sepel_length);
+            double verginica_sepel_width_max = calculatemaxx(verginica_sepel_width);
+            double verginica_petal_length_max = calculatemaxx(verginica_petal_length);
+            double verginica_petal_width_max = calculatemaxx(verginica_petal_width);
+            double petal_width_max = calculatemax(petal_width);
+            System.out.println("******************************OVERALL SUMMARY*******************************");
+            System.out.println("----------------------------------------------------------------------------");
+            System.out.println("| STATISTIC |\tSEPEL LENGTH |\tSEPEL WIDTH |\tPETAL LENGTH |\tPETAL WIDTH|");
+            System.out.println("----------------------------------------------------------------------------");
+            System.out.printf("| MEAN       |\t%.2f\t     |\t%.2f\t     |\t%.2f\t     |\t%.2f       |%n",sepel_length_mean, sepel_width_mean,petal_length_mean,petal_width_mean);
+            System.out.printf("| MEDIAN     |\t%.2f\t     |\t%.2f\t     |\t%.2f\t     |\t%.2f       |%n",sepel_length[calculatemedian(sepel_length)], sepel_width[calculatemedian(sepel_width)],petal_length[calculatemedian(petal_length)],petal_width[calculatemedian(petal_width)]);
+            System.out.printf("| MODE       |\t%.2f\t     |\t%.2f\t     |\t%.2f\t     |\t%.2f       |%n",sepel_length_mode, sepel_width_mode, petel_length_mode, petel_width_mode);
+            System.out.printf("| MINIMUM    |\t%.2f\t     |\t%.2f\t     |\t%.2f\t     |\t%.2f       |%n",sepel_length_min, sepel_width_min, petal_length_min, petal_width_min);
+            System.out.printf("| MAXIMUM    |\t%.2f\t     |\t%.2f\t     |\t%.2f\t     |\t%.2f       |%n",sepel_length_max, sepel_width_max, petal_length_max, petal_width_max);
+            System.out.println("----------------------------------------------------------------------------");
+            System.out.println("******************************IRIS-SETOSA***********************************");
+            System.out.println("----------------------------------------------------------------------------");
+            System.out.println("| STATISTIC |\tSEPEL LENGTH |\tSEPEL WIDTH |\tPETAL LENGTH |\tPETAL WIDTH|");
+            System.out.println("----------------------------------------------------------------------------");
+            System.out.printf("| MEAN       |\t%.2f\t     |\t%.2f\t     |\t%.2f\t     |\t%.2f       |%n",setosa_sepel_length_mean, setosa_sepel_width_mean, setosa_petal_length_mean, setosa_petal_width_mean);
+            System.out.printf("| MEDIAN     |\t%.2f\t     |\t%.2f\t     |\t%.2f\t     |\t%.2f       |%n",setosa_sepel_length[calculatemedian(setosa_sepel_length)], setosa_sepel_width[calculatemedian(setosa_sepel_width)], setosa_petal_length[calculatemedian(setosa_petal_length)], setosa_petal_width[calculatemedian(setosa_petal_width)]);
+            System.out.printf("| MODE       |\t%.2f\t     |\t%.2f\t     |\t%.2f\t     |\t%.2f       |%n",setosa_sepel_length_mode, setosa_sepel_width_mode, setosa_petel_length_mode, setosa_petel_width_mode);
+            System.out.printf("| MINIMUM    |\t%.2f\t     |\t%.2f\t     |\t%.2f\t     |\t%.2f       |%n",setosa_sepel_length_min, setosa_sepel_width_min, setosa_petal_length_min, setosa_petal_width_min);
+            System.out.printf("| MAXIMUM    |\t%.2f\t     |\t%.2f\t     |\t%.2f\t     |\t%.2f       |%n",setosa_sepel_length_max, setosa_sepel_width_max, setosa_petal_length_max, setosa_petal_width_max);
+            System.out.println("----------------------------------------------------------------------------");
+            System.out.println("******************************IRIS-VERSICOLOR*******************************");
+            System.out.println("----------------------------------------------------------------------------");
+            System.out.println("| STATISTIC |\tSEPEL LENGTH |\tSEPEL WIDTH |\tPETAL LENGTH |\tPETAL WIDTH|");
+            System.out.println("----------------------------------------------------------------------------");
+            System.out.printf("| MEAN       |\t%.2f\t     |\t%.2f\t     |\t%.2f\t     |\t%.2f       |%n",versicolor_sepel_length_mean, versicolor_sepel_width_mean, versicolor_petal_length_mean, versicolor_petal_width_mean);
+            System.out.printf("| MEDIAN     |\t%.2f\t     |\t%.2f\t     |\t%.2f\t     |\t%.2f       |%n",versicolor_sepel_length[calculatemedian(versicolor_sepel_length)], versicolor_sepel_width[calculatemedian(versicolor_sepel_width)], versicolor_petal_length[calculatemedian(versicolor_petal_length)], versicolor_petal_width[calculatemedian(versicolor_petal_width)]);
+            System.out.printf("| MODE       |\t%.2f\t     |\t%.2f\t     |\t%.2f\t     |\t%.2f       |%n",versicolor_sepel_length_mode, versicolor_sepel_width_mode, versicolor_petal_length_mode, versicolor_petal_width_mode);
+            System.out.printf("| MINIMUM    |\t%.2f\t     |\t%.2f\t     |\t%.2f\t     |\t%.2f       |%n",versicolor_sepel_length_min, versicolor_sepel_width_min, versicolor_petal_length_min, versicolor_petal_width_min);
+            System.out.printf("| MAXIMUM    |\t%.2f\t     |\t%.2f\t     |\t%.2f\t     |\t%.2f       |%n",versicolor_sepel_length_max, versicolor_sepel_width_max, versicolor_petal_length_max, versicolor_petal_width_max);
+            System.out.println("----------------------------------------------------------------------------");
+            System.out.println("******************************IRIS-VERGINICA********************************");
+            System.out.println("----------------------------------------------------------------------------");
+            System.out.println("| STATISTIC |\tSEPEL LENGTH |\tSEPEL WIDTH |\tPETAL LENGTH |\tPETAL WIDTH|");
+            System.out.println("----------------------------------------------------------------------------");
+            System.out.printf("| MEAN       |\t%.2f\t     |\t%.2f\t     |\t%.2f\t     |\t%.2f       |%n",verginica_sepel_length_mean, verginica_sepel_width_mean, verginica_petal_length_mean, verginica_petal_width_mean);
+            System.out.printf("| MEDIAN     |\t%.2f\t     |\t%.2f\t     |\t%.2f\t     |\t%.2f       |%n",verginica_sepel_length[calculatemedian(verginica_sepel_length)], verginica_sepel_width[calculatemedian(verginica_sepel_width)], verginica_petal_length[calculatemedian(verginica_petal_length)], verginica_petal_width[calculatemedian(verginica_petal_width)]);
+            System.out.printf("| MODE       |\t%.2f\t     |\t%.2f\t     |\t%.2f\t     |\t%.2f       |%n",verginica_sepel_length_mode, verginica_sepel_width_mode, verginica_petal_length_mode, verginica_petal_width_mode);
+            System.out.printf("| MINIMUM    |\t%.2f\t     |\t%.2f\t     |\t%.2f\t     |\t%.2f       |%n",verginica_sepel_length_min, verginica_sepel_width_min, verginica_petal_length_min, verginica_petal_width_min);
+            System.out.printf("| MAXIMUM    |\t%.2f\t     |\t%.2f\t     |\t%.2f\t     |\t%.2f       |%n",verginica_sepel_length_max, verginica_sepel_width_max, verginica_petal_length_max, verginica_petal_width_max);
+            System.out.println("----------------------------------------------------------------------------");
+        }        
+        catch(IOException e){
+            System.out.println(e.getMessage());
+        }
+    }
+    public static double calculatemean(float[] arr, int count){
+        double summ =0.0;
+        for(int i=0;i<arr.length;i++){
+            summ += arr[i];
+        }
+        return summ/count;
+    }
+    public static int calculatemedian(float[] median){
+        for(int i=0;i<median.length-1;i++){
+            int min=i;
+            for(int j=i+1;j<median.length;j++){
+                if(median[j]<median[min]){
+                    min=j;
+                }
+            }
+            float temp = median[min];
+            median[min]=median[i];
+            median[i]=temp;
+        }
+        if(median.length%2==0)
+            return (int)(median.length/2);
+        else
+            return (int)(median.length+1)/2;
+    }
+    public static float calculatemode(float[] data, int n){
+        float mode =0;
+        int maxcount =0;
+        for(int i=0;i<n;i++){
+            int counts =0;
+            for(int j=0;j<n;j++){
+                if(data[i]==data[j]){
+                    counts++;
+                }
+            }
+            if(counts>maxcount){
+                maxcount = counts;
+                mode = data[i];
             }
         }
         return mode;
     }
-    
-    private static double calculateMin(double[] attribute) {
-        double min = Double.MAX_VALUE;
-        for (double value : attribute) {
-            if (value < min) {
-                min = value;
-            }
-        }
-        return min;
+    public static float calculatemin(float[] data){
+        Arrays.sort(data);
+        return data[0];
     }
-    
-    private static double calculateMax(double[] attribute) {
-        double max = Double.MIN_VALUE;
-        for (double value : attribute) {
-            if (value > max) {
-                max = value;
-            }
-        }
-        return max;
+    public static float calculatemax(float[] data){
+        Arrays.sort(data);
+        return data[149];
     }
-}    
+    public static float calculatemaxx(float[] data){
+        Arrays.sort(data);
+        return data[49];
+    }
+}
